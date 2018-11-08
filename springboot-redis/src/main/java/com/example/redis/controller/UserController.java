@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 @RestController
@@ -20,11 +21,27 @@ public class UserController {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    private StringRedisTemplate testMax;
 
     // 缓存key
     private final String _CacheKey = "userCacheKeyTime";
 
-    @RequestMapping("/")
+    @RequestMapping("testmax")
+    public String testMaxMax() {
+        String skey = "tMax-";
+        String svalue = "nononon";
+        Random random = new Random();
+        Long starttime = System.currentTimeMillis();
+        int i = 0;
+        while( i++ < 1_000 ) {
+            testMax.opsForValue().set(skey+ random.nextInt()*999_999_999, svalue+ random.nextInt()*9765);
+        }
+        Long endtime = System.currentTimeMillis();
+        return "存储成功！"+(endtime-starttime)+"ms" ;
+    }
+
+    @RequestMapping("/ca")
     @Cacheable(value = _CacheKey)
     public String doGet() {
 
