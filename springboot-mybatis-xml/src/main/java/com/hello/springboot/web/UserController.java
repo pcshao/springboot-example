@@ -1,31 +1,31 @@
 package com.hello.springboot.web;
 
-import com.hello.springboot.entity.User;
-import com.hello.springboot.dao.UserMapper;
+import com.hello.springboot.dao.TestMapper;
+import com.hello.springboot.entity.Test;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/")
 public class UserController {
 
     @Resource
-    private UserMapper userMapper;
+    private TestMapper testMapper;
 
-    @RequestMapping("/")
-    public ModelAndView index() {
-        User user = new User();
-        user.setAge(18);
-        user.setName("Adam");
-        user.setPwd("123456");
-        userMapper.insert(user);
-
-        ModelAndView modelAndView = new ModelAndView("/index");
-        modelAndView.addObject("count", userMapper.findAll().size());
-        return modelAndView;
+    @RequestMapping("/user")
+    public String first(HttpSession httpSession){
+        List<Test> list = testMapper.selectAll();
+        StringBuffer sb = new StringBuffer();
+        for(Test t : list){
+            sb.append(t.toString()+"\n");
+        }
+        String message = sb.toString();
+        httpSession.setAttribute("message", message);
+        return "index";
     }
 
 }
